@@ -34,7 +34,7 @@ const PopularPage = () => {
   return (
     <div className="container">
       <center>
-      <h1 className="mt-4 mb-4">Películas Populares</h1>
+      <h1 className="mt-4 mb-4">Películas Populares 🎦</h1>
       </center>
       {loading ? (
         <p>Cargando...</p>

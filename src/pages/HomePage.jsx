@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getUpcomingMovies } from '../service/apiService';
-import film2 from '../assets/film2.jpg'
+import film2 from '../assets/film2.jpg';
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,10 +33,18 @@ const HomePage = () => {
     }
   };
 
+  const handleMovieDetail = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedMovie(null);
+  };
+
   return (
     <div className="container">
       <center>
-      <h1 className="mt-4 mb-4">¡Proximos Estrenos!</h1>
+        <h1 className="mt-4 mb-4">¡Próximos Estrenos 🎦!</h1>
       </center>
       {loading ? (
         <p>Cargando...</p>
@@ -59,6 +68,12 @@ const HomePage = () => {
                   <div className="card-body">
                     <h5 className="card-title">{movie.title}</h5>
                     <p className="card-text">Fecha de estreno: {movie.release_date}</p>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleMovieDetail(movie)}
+                    >
+                      Ver Detalles
+                    </button>
                   </div>
                 </div>
               </div>
@@ -66,33 +81,61 @@ const HomePage = () => {
           </div>
           <div className="mt-4">
             <center>
-            <button
-              className="btn btn-primary me-2"
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              style= {{ fontSize: '1.5em' }} // Cambiar el tamaño del texto del botón
-            >
-              Anterior
-            </button>
-            <span className="align-middle">Página {currentPage}</span>
-            <button 
-              className="btn btn-primary ms-2" 
-              onClick={handleNextPage}
-              style= {{ fontSize: '1.5em' }} 
+              <button
+                className="btn btn-primary me-2"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                style={{ fontSize: '1.5em' }}
               >
-              Siguiente
-            </button>
+                Anterior
+              </button>
+              <span className="align-middle">Página {currentPage}</span>
+              <button
+                className="btn btn-primary ms-2"
+                onClick={handleNextPage}
+                style={{ fontSize: '1.5em' }}
+              >
+                Siguiente
+              </button>
             </center>
           </div>
           <footer>
-          <br/>
-          <img src={film2} width="1400" height="150" />
-          <br />
-           </footer>
+            <br />
+            <img src={film2} width="1400" height="150" alt="footer" />
+            <br />
+          </footer>
         </>
       )}
+
+      {selectedMovie && (
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{selectedMovie.title}</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseDetail}
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>Fecha de estreno: {selectedMovie.release_date}</p>
+                <p>Descripción: {selectedMovie.overview}</p>
+                <p>Puntuación: {selectedMovie.vote_average}</p>
+                {/* Agrega más detalles si es necesario */}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseDetail}>
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-    
   );
 };
 
